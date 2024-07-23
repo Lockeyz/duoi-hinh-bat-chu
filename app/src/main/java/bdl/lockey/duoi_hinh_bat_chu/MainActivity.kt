@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.icu.text.Transliterator.Position
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import bdl.lockey.duoi_hinh_bat_chu.const.Layout
@@ -65,25 +66,30 @@ class MainActivity : AppCompatActivity(), IClickItemListener {
         if (answerList.joinToString(separator = "") { it }.length == viewModel.answerList.value?.size) {
             if (answerList == viewModel.answerList.value) {
                 setResult(true)
+                binding.layoutNext.visibility = View.VISIBLE
             } else {
                 setResult(false)
+                binding.layoutNext.visibility = View.VISIBLE
             }
         }
+//        onSubmitWord()
     }
 
 
-//    private fun onSubmitWord() {
-//        val playerWord = binding.textInputEditText.text.toString()
-//
-//        if (viewModel.isUserWordCorrect(playerWord)) {
-//            setWrongAnswer(false)
-//            if (!viewModel.nextWord()) {
-//                showFinalScoreDialog()
-//            }
-//        } else {
-//            setWrongAnswer(true)
-//        }
-//    }
+    private fun onSubmitWord() {
+        if (answerList.joinToString(separator = "") { it }.length == viewModel.answerList.value?.size){
+            if (viewModel.isUserWordCorrect(answerList)) {
+                setResult(false)
+                binding.layoutNext.visibility = View.VISIBLE
+                if (!viewModel.nextQuestion()) {
+                    showFinalScoreDialog()
+                }
+            } else {
+                setResult(true)
+                binding.layoutNext.visibility = View.VISIBLE
+            }
+        }
+    }
 
 
     /*
@@ -119,7 +125,7 @@ class MainActivity : AppCompatActivity(), IClickItemListener {
     //Khởi tạo và cập nhật dữ liệu mới khi chơi lại
     private fun restartGame() {
         viewModel.reinitializeData()
-        setWrongAnswer(false)
+        setResult(false)
     }
 
     // Thoát game

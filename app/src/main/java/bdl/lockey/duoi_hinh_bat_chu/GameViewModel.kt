@@ -106,8 +106,8 @@ class GameViewModel : ViewModel() {
     }
 
     // Kiểm tra câu trả lời đúng hay không?
-    fun isUserWordCorrect(playerWord: String): Boolean {
-        if (playerWord.equals(currentWord, true)) {
+    fun isUserWordCorrect(playerWord: List<String>): Boolean {
+        if (playerWord == answerList.value) {
             increaseScore()
             return true
         } else {
