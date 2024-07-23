@@ -33,22 +33,21 @@ class LetterAdapter(private val dataset: List<String>, private val iClickItemLis
         return dataset.size
     }
 
-    @SuppressLint("SetTextI18n", "NotifyDataSetChanged")
     override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
         val item = dataset[position]
         holder.tvLetter.text = item
 
         holder.ivHolder.setOnClickListener {
-            iClickItemListener.onClickItem(position)
-            if (!holder.tvLetter.text.isNullOrEmpty()){
+            if (holder.tvLetter.text != ""){
                 for (i in answerList.indices){
                     if (answerList[i] == ""){
                         answerList[i] = item
                         break
                     }
                 }
+                iClickItemListener.onClickItem(position)
             }
-            iClickItemListener.onClickItem(position)
+
         }
 
     }
