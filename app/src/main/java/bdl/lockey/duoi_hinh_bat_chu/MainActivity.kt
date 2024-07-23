@@ -63,7 +63,7 @@ class MainActivity : AppCompatActivity(), IClickItemListener {
         Log.d("MainAnswer", viewModel.answerList.value?.size.toString())
 
         if (answerList.joinToString(separator = "") { it }.length == viewModel.answerList.value?.size) {
-            if (answerList == viewModel.answerList) {
+            if (answerList == viewModel.answerList.value) {
                 setResult(true)
             } else {
                 setResult(false)
