@@ -23,14 +23,13 @@ class GameViewModel : ViewModel() {
     val answerLength: LiveData<Int>
         get() = _answerLength
 
-    private var _questionLetterList = MutableLiveData<List<String>>()
-    val questionLetterList: LiveData<List<String>>
+    private var _questionLetterList = MutableLiveData<MutableList<String>>()
+    val questionLetterList: LiveData<MutableList<String>>
         get() = _questionLetterList
 
     private var _answerList = MutableLiveData<List<String>>()
     val answerList: LiveData<List<String>>
         get() = _answerList
-
 
     // List of questions to be used in the game
     private var questionsList: MutableList<Question> = mutableListOf()
@@ -44,9 +43,17 @@ class GameViewModel : ViewModel() {
         getNextQuestion()
     }
 
-    fun setAnswerList() {
-        _answerList.value = MainActivity.answerList
+//    fun setAnswerList() {
+//        _answerList.value = MainActivity.answerList
+//    }
+
+    fun getLetter(i: Int) {
+        val list: MutableList<String>? = _questionLetterList.value
+        list?.set(i, "")
+        _questionLetterList.value = list
     }
+
+
 
     /*
      * Lấy câu hỏi tiếp theo
@@ -57,15 +64,15 @@ class GameViewModel : ViewModel() {
 
         // Tạo ra danh sách chứa các kí tự của câu trả lời
         currentWord = currentQuestion.answer
-        var wordList = currentWord.toMutableList().map { it.toString() }
+        var wordList = currentWord.map { it.toString() }.toMutableList()
 
         // Thêm các kí tự ngẫu nhiên vào danh sách
-        val alphabetList: List<String> = listOf(
+        val alphabetList = listOf(
             "a", "b", "c", "d", "e", "g", "h", "i", "k", "l", "m",
             "n", "o", "p", "q", "r", "s", "t", "u", "v", "x", "y"
         )
         val subLetters = alphabetList.shuffled().take(MAX_LETTER - currentWord.length)
-        wordList = wordList + subLetters
+        wordList.addAll(subLetters)
         wordList.shuffled()
 
         // Kiểm tra câu hỏi tiếp theo có trùng với những câu hỏi cũ hay không?
@@ -75,6 +82,7 @@ class GameViewModel : ViewModel() {
         } else {
             Log.d("Unscramble", "currentWord= $currentWord")
             _currentImage.value = currentQuestion.imageQuestion
+            _answerList.value = currentWord.map { it.toString() }
             _answerLength.value = currentWord.length
             _questionLetterList.value = wordList
             questionsList.add(currentQuestion)

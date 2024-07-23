@@ -39,27 +39,18 @@ class LetterAdapter(private val dataset: List<String>, private val iClickItemLis
         holder.tvLetter.text = item
 
         holder.ivHolder.setOnClickListener {
+            iClickItemListener.onClickItem(position)
             if (!holder.tvLetter.text.isNullOrEmpty()){
                 for (i in answerList.indices){
                     if (answerList[i] == ""){
-                        answerList[i] = holder.tvLetter.text.toString()
-                        holder.tvLetter.text = ""
-                        Log.d("answer", answerList.toString())
+                        answerList[i] = item
                         break
                     }
                 }
             }
-
+            iClickItemListener.onClickItem(position)
         }
 
-        holder.itemView.setOnClickListener(View.OnClickListener {
-            iClickItemListener.onClickItem(item)
-        })
     }
-
-    fun setOnItemClickListener(listener: IClickItemListener){
-
-    }
-
 
 }

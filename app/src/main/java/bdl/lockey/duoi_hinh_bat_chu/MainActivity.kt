@@ -1,10 +1,12 @@
 package bdl.lockey.duoi_hinh_bat_chu
 
 import android.annotation.SuppressLint
+import android.icu.text.Transliterator.Position
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import bdl.lockey.duoi_hinh_bat_chu.const.Layout
 import bdl.lockey.duoi_hinh_bat_chu.databinding.ActivityMainBinding
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
@@ -41,27 +43,34 @@ class MainActivity : AppCompatActivity(), IClickItemListener {
         binding.recyclerViewCharacterHint.adapter = questionAdapter
 
 
-
-
 //        binding.submit.setOnClickListener { onSubmitWord() }
         binding.layoutNext.setOnClickListener { onNextQuestion() }
-        if (viewModel.isGameOver()) { showFinalScoreDialog() }
+        if (viewModel.isGameOver()) {
+            showFinalScoreDialog()
+        }
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    override fun onClickItem(letter: String) {
+    override fun onClickItem(position: Int) {
+        viewModel.getLetter(position)
         answerAdapter.notifyDataSetChanged()
         questionAdapter.notifyDataSetChanged()
         Log.d("MainAnswer", answerList.toString())
+        Log.d("MainAnswer", viewModel.questionLetterList.value.toString())
+        Log.d("MainAnswer", answerList.joinToString(separator = "") { it })
+        Log.d("MainAnswer", answerList.joinToString(separator = "") { it }.length.toString())
+        Log.d("MainAnswer", viewModel.answerList.value?.toString().toString())
+        Log.d("MainAnswer", viewModel.answerList.value?.size.toString())
+
+        if (answerList.joinToString(separator = "") { it }.length == viewModel.answerList.value?.size) {
+            if (answerList == viewModel.answerList) {
+                setResult(true)
+            } else {
+                setResult(false)
+            }
+        }
     }
 
-
-    override fun onResume() {
-        super.onResume()
-        answerAdapter.notifyDataSetChanged()
-        questionAdapter.notifyDataSetChanged()
-        Log.d("MainAnswer", answerList.toString())
-    }
 
 //    private fun onSubmitWord() {
 //        val playerWord = binding.textInputEditText.text.toString()
@@ -106,7 +115,7 @@ class MainActivity : AppCompatActivity(), IClickItemListener {
             .show()
     }
 
-    
+
     //Khởi tạo và cập nhật dữ liệu mới khi chơi lại
     private fun restartGame() {
         viewModel.reinitializeData()
@@ -116,6 +125,15 @@ class MainActivity : AppCompatActivity(), IClickItemListener {
     // Thoát game
     private fun exitGame() {
         finish()
+    }
+
+    // Thiết lập khi đáp án sai
+    private fun setResult(error: Boolean) {
+        if (error) {
+            binding.recyclerViewAnswer.adapter = ResultAdapter(Layout.CORRECT, answerList)
+        } else {
+            binding.recyclerViewAnswer.adapter = ResultAdapter(Layout.WRONG, answerList)
+        }
     }
 
     // Thiết lập khi đáp án sai
