@@ -38,7 +38,7 @@ class LetterAdapter(private val dataset: List<String>, private val iClickItemLis
         holder.tvLetter.text = item
 
         holder.ivHolder.setOnClickListener {
-            if (holder.tvLetter.text != ""){
+            if (item != ""){
                 for (i in answerList.indices){
                     if (answerList[i] == ""){
                         answerList[i] = item
@@ -47,7 +47,6 @@ class LetterAdapter(private val dataset: List<String>, private val iClickItemLis
                 }
                 iClickItemListener.onClickItem(position)
             }
-
         }
 
     }

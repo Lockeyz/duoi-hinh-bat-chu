@@ -69,12 +69,12 @@ class MainActivity : AppCompatActivity(), IClickItemListener {
         viewModel.getLetter(position)
         answerAdapter.notifyDataSetChanged()
         questionAdapter.notifyDataSetChanged()
-        Log.d("MainAnswer", answerList.toString())
-        Log.d("MainAnswer", viewModel.questionLetterList.value.toString())
-        Log.d("MainAnswer", answerList.joinToString(separator = "") { it })
-        Log.d("MainAnswer", answerList.joinToString(separator = "") { it }.length.toString())
-        Log.d("MainAnswer", viewModel.answerList.value?.toString().toString())
-        Log.d("MainAnswer", viewModel.answerList.value?.size.toString())
+//        Log.d("MainAnswer", answerList.toString())
+//        Log.d("MainAnswer", viewModel.questionLetterList.value.toString())
+//        Log.d("MainAnswer", answerList.joinToString(separator = "") { it })
+//        Log.d("MainAnswer", answerList.joinToString(separator = "") { it }.length.toString())
+//        Log.d("MainAnswer", viewModel.answerList.value?.toString().toString())
+//        Log.d("MainAnswer", viewModel.answerList.value?.size.toString())
 
         onSubmitWord()
     }
