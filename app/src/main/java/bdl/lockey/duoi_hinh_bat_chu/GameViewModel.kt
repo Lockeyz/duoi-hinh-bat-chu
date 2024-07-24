@@ -7,7 +7,7 @@ import androidx.lifecycle.ViewModel
 
 class GameViewModel : ViewModel() {
 
-    private val _currentLife = MutableLiveData(0)
+    private val _currentLife = MutableLiveData(5)
     val currentLife: LiveData<Int>
         get() = _currentLife
 

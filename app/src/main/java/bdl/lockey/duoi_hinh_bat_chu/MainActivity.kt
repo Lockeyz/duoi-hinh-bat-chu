@@ -32,20 +32,33 @@ class MainActivity : AppCompatActivity(), IClickItemListener {
         _binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        answerList = MutableList(viewModel.answerLength.value!!) { "" }
+        viewModel.currentImage.observe(this) {
+            binding.ivQuestion.setImageResource(viewModel.currentImage.value!!)
+        }
 
-        answerAdapter = AnswerAdapter(answerList)
-        questionAdapter = LetterAdapter(viewModel.questionLetterList.value!!, this)
+        viewModel.answerLength.observe(this) {
+            answerList = MutableList(viewModel.answerLength.value!!) { "" }
+            answerAdapter = AnswerAdapter(answerList)
+            binding.recyclerViewAnswer.adapter = answerAdapter
+        }
 
+        viewModel.questionLetterList.observe(this) {
+            questionAdapter = LetterAdapter(viewModel.questionLetterList.value!!, this)
+            binding.recyclerViewCharacterHint.adapter = questionAdapter
+        }
 
-        binding.ivQuestion.setImageResource(viewModel.currentImage.value!!)
-        binding.recyclerViewAnswer.adapter = answerAdapter
-        answerAdapter.notifyDataSetChanged()
-        binding.recyclerViewCharacterHint.adapter = questionAdapter
+        viewModel.currentLife.observe(this) {
+            binding.tvLife.text = viewModel.currentLife.value.toString()
+        }
 
+        viewModel.score.observe(this) {
+            binding.tvScore.text = viewModel.score.value.toString()
+        }
 
-//        binding.submit.setOnClickListener { onSubmitWord() }
-        binding.layoutNext.setOnClickListener { onNextQuestion() }
+        binding.layoutNext.setOnClickListener {
+            onNextQuestion()
+            Log.d("MainAnswer", viewModel.questionLetterList.value.toString())
+        }
         if (viewModel.isGameOver()) {
             showFinalScoreDialog()
         }
@@ -63,29 +76,20 @@ class MainActivity : AppCompatActivity(), IClickItemListener {
         Log.d("MainAnswer", viewModel.answerList.value?.toString().toString())
         Log.d("MainAnswer", viewModel.answerList.value?.size.toString())
 
-        if (answerList.joinToString(separator = "") { it }.length == viewModel.answerList.value?.size) {
-            if (answerList == viewModel.answerList.value) {
-                setResult(true)
-                binding.layoutNext.visibility = View.VISIBLE
-            } else {
-                setResult(false)
-                binding.layoutNext.visibility = View.VISIBLE
-            }
-        }
-//        onSubmitWord()
+        onSubmitWord()
     }
 
 
     private fun onSubmitWord() {
         if (answerList.joinToString(separator = "") { it }.length == viewModel.answerList.value?.size){
             if (viewModel.isUserWordCorrect(answerList)) {
-                setResult(false)
-                binding.layoutNext.visibility = View.VISIBLE
-                if (!viewModel.nextQuestion()) {
-                    showFinalScoreDialog()
-                }
-            } else {
                 setResult(true)
+                binding.layoutNext.visibility = View.VISIBLE
+//                if (!viewModel.nextQuestion()) {
+//                    showFinalScoreDialog()
+//                }
+            } else {
+                setResult(false)
                 binding.layoutNext.visibility = View.VISIBLE
             }
         }
@@ -100,6 +104,7 @@ class MainActivity : AppCompatActivity(), IClickItemListener {
     private fun onNextQuestion() {
         if (viewModel.nextQuestion()) {
             setWrongAnswer(false)
+            binding.layoutNext.visibility = View.GONE
         } else {
             showFinalScoreDialog()
         }
